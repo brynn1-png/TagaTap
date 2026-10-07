@@ -1,266 +1,180 @@
 import React, { useEffect, useRef, useState } from "react";
-import { siFacebook, siInstagram, siTiktok } from "simple-icons";
 
 const demoUrl = "/demo/index.html";
 const profile = {
   name: "Lloyd Pucyutan",
   phone: "+63 09163709474",
   phoneLink: "+639163709474",
-  address: "Brgy. San Antonio 2, San Pablo City, Laguna",
   email: "lloydpucyutan01@gmail.com",
+  address: "Brgy. San Antonio 2, San Pablo City, Laguna",
 };
 const mapUrl = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(profile.address)}`;
-const mapEmbedUrl = `https://maps.google.com/maps?q=${encodeURIComponent(profile.address)}&z=15&output=embed`;
 
-function SocialIcon({ icon, name }) {
-  return <svg className={`profile-social ${name}`} viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d={icon.path} /></svg>;
-}
-
-const questions = [
-  {
-    question: "Does someone need to install an app?",
-    answer: "No. Your TagaTap profile opens in their phone's browser, so they can see your details and choose how to connect.",
-  },
-  {
-    question: "What can I put on my profile?",
-    answer: "The example card shows contact details, location, social links, and quick actions.",
-  },
-  {
-    question: "Can someone save my contact details?",
-    answer: "Yes. The card includes a Save contact action that downloads a contact file they can add to their phone.",
-  },
+const capabilities = [
+  { number: "01", title: "Save your details", description: "A contact file makes it easy for someone to keep your number and email." },
+  { number: "02", title: "Start a conversation", description: "Call, text, email, or open Messenger from one place." },
+  { number: "03", title: "Share more of your world", description: "Add a location and links to the places you want people to find." },
 ];
 
-function Brand() {
-  return (
-    <a className="brand" href="#top" aria-label="TagaTap, back to top">
-      <img className="brand-mark" src="/tagatap-mark.svg" alt="" />
-      <span className="brand-word">TagaTap<span className="brand-period">°</span></span>
-    </a>
-  );
+const packages = [
+  { name: "Starter", price: "₱1,099", description: "1 NFC card with your contact information and social media accounts.", detail: "A simple profile for sharing the essentials.", demo: true },
+  { name: "Business", price: "₱2,099", description: "Everything in Starter, plus a business showcase landing page with personalized business information.", detail: "Give your business more room to introduce itself.", demo: "/demo/business.html" },
+  { name: "Executive", price: "₱3,999", description: "1 NFC card with a fully customized landing page, premium design, smooth animations, interactive effects, and a seamless mobile experience.", detail: "A tailored experience for a distinctive introduction." },
+];
+
+const questions = [
+  { question: "Does someone need to install an app?", answer: "No. A SmarTap profile opens in a phone browser, so someone can view your details and choose how to connect." },
+  { question: "What can I put on my profile?", answer: "The example card includes contact details, location, social links, and quick actions for getting in touch." },
+  { question: "Can someone save my contact details?", answer: "Yes. Save contact downloads a contact file they can add to their phone." },
+  { question: "Can I see a complete example?", answer: "Yes. Explore Lloyd’s Starter card or the fictional Morrow Coffee Business showcase to see what each page could look like." },
+  { question: "Which package does Lloyd’s example show?", answer: "Lloyd’s profile shows Starter. Business keeps those contact actions and adds a personalized showcase, as shown by the fictional coffee shop demo. Executive includes a fully customized landing page." },
+];
+
+function Brand({ className = "" }) {
+  return <a className={`brand ${className}`} href="#top" aria-label="SmarTap, back to top"><img src="/smartap-logo.svg" alt="" /></a>;
 }
 
 function Arrow({ diagonal = false }) {
-  return <span className="button-arrow" aria-hidden="true">{diagonal ? "↗" : "→"}</span>;
-}
-
-function ProfileIcon({ name, size = 22 }) {
-  const shapes = {
-    user: <><circle cx="12" cy="8" r="4" /><path d="M4 21a8 8 0 0 1 16 0" /></>,
-    person: <><path d="M20 21a8 8 0 0 0-16 0M12 13a4 4 0 1 0 0-8 4 4 0 0 0 0 8Z" /><path d="M19 8v6M16 11h6" /></>,
-    phone: <path d="M22 16.9v3a2 2 0 0 1-2.2 2 19.8 19.8 0 0 1-8.6-3.1 19.5 19.5 0 0 1-6-6A19.8 19.8 0 0 1 2.1 4.2 2 2 0 0 1 4.1 2h3a2 2 0 0 1 2 1.7c.1 1 .4 2 .7 2.8a2 2 0 0 1-.5 2.1L8.1 9.9a16 16 0 0 0 6 6l1.3-1.2a2 2 0 0 1 2.1-.5c.9.3 1.8.6 2.8.7a2 2 0 0 1 1.7 2Z" />,
-    pin: <><path d="M20 10c0 5-8 12-8 12S4 15 4 10a8 8 0 1 1 16 0Z" /><circle cx="12" cy="10" r="2.5" /></>,
-    mail: <><rect x="2" y="4" width="20" height="16" rx="2" /><path d="m22 7-10 7L2 7" /></>,
-    message: <path d="M21 15a4 4 0 0 1-4 4H8l-5 3V7a4 4 0 0 1 4-4h10a4 4 0 0 1 4 4Z" />,
-    bolt: <path d="M13 2 3 14h8l-1 8 10-12h-8l1-8Z" />,
-    share: <><circle cx="18" cy="5" r="3" /><circle cx="6" cy="12" r="3" /><circle cx="18" cy="19" r="3" /><path d="m8.6 10.5 6.8-4M8.6 13.5l6.8 4" /></>,
-    arrow: <path d="m9 18 6-6-6-6" />,
-  };
-  return <svg aria-hidden="true" fill="none" height={size} viewBox="0 0 24 24" width={size} stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.8">{shapes[name]}</svg>;
-}
-
-function ProfileHeading({ icon, children }) {
-  return <div className="profile-heading"><ProfileIcon name={icon} size={icon === "bolt" ? 25 : 22} /><h2>{children}</h2><span /></div>;
-}
-
-function ProfileAction({ icon, href, onClick, children, description, variant = "" }) {
-  const contents = <><span className="profile-action-icon">{icon}</span><span className="profile-action-label"><strong>{children}</strong>{description && <small>{description}</small>}</span><span className="profile-action-arrow"><ProfileIcon name="arrow" size={17} /></span></>;
-  const className = `profile-action ${variant}`.trim();
-  if (href) return <a className={className} href={href} target={href.startsWith("http") ? "_blank" : undefined} rel={href.startsWith("http") ? "noreferrer" : undefined}>{contents}</a>;
-  return <button className={className} type="button" onClick={onClick}>{contents}</button>;
+  return <span className="arrow" aria-hidden="true">{diagonal ? "↗" : "→"}</span>;
 }
 
 function App() {
   const [menuOpen, setMenuOpen] = useState(false);
   const [toast, setToast] = useState("");
   const toastTimer = useRef(null);
-  const stepsRef = useRef(null);
 
   useEffect(() => () => window.clearTimeout(toastTimer.current), []);
   useEffect(() => {
-    if (!("IntersectionObserver" in window) || window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
-    const targets = [stepsRef.current, ...document.querySelectorAll(".scroll-reveal")].filter(Boolean);
-    targets.forEach((target) => target.classList.add("motion-ready"));
-    const observer = new IntersectionObserver((entries) => {
-      entries.forEach((entry) => {
-        if (entry.isIntersecting) {
-          entry.target.classList.add("is-visible");
-          observer.unobserve(entry.target);
-        }
-      });
-    }, { threshold: 0.15, rootMargin: "0px 0px -40px 0px" });
-    targets.forEach((target) => observer.observe(target));
-    return () => observer.disconnect();
+    const sectionId = decodeURIComponent(window.location.hash.slice(1));
+    if (sectionId) window.requestAnimationFrame(() => document.getElementById(sectionId)?.scrollIntoView({ behavior: "instant" }));
   }, []);
 
-  function showToast(message) {
-    setToast(message);
-    window.clearTimeout(toastTimer.current);
-    toastTimer.current = window.setTimeout(() => setToast(""), 2400);
-  }
-
   function saveContact() {
-    const vcard = ["BEGIN:VCARD", "VERSION:3.0", `FN:${profile.name}`, `TEL;TYPE=CELL:${profile.phoneLink}`, `EMAIL:${profile.email}`, `ADR;TYPE=HOME:;;${profile.address};;;;`, "ORG:TagaTap", "END:VCARD"].join("\r\n");
+    const vcard = ["BEGIN:VCARD", "VERSION:3.0", `FN:${profile.name}`, `TEL;TYPE=CELL:${profile.phoneLink}`, `EMAIL:${profile.email}`, `ADR;TYPE=HOME:;;${profile.address};;;;`, "ORG:SmarTap", "END:VCARD"].join("\r\n");
     const url = URL.createObjectURL(new Blob([vcard], { type: "text/vcard" }));
     const link = document.createElement("a");
     link.href = url;
     link.download = "lloyd-pucyutan.vcf";
     link.click();
     window.setTimeout(() => URL.revokeObjectURL(url), 1000);
-    showToast("Contact card downloaded");
+    setToast("Contact card downloaded");
+    window.clearTimeout(toastTimer.current);
+    toastTimer.current = window.setTimeout(() => setToast(""), 2400);
   }
 
-  function closeMenu() {
-    setMenuOpen(false);
-  }
+  function closeMenu() { setMenuOpen(false); }
 
   return (
     <div className="site" id="top">
-      <header className="site-header">
-        <div className="container nav-wrap">
-          <Brand />
-          <button
-            className="menu-toggle"
-            type="button"
-            aria-label={menuOpen ? "Close menu" : "Open menu"}
-            aria-expanded={menuOpen}
-            aria-controls="site-nav"
-            onClick={() => setMenuOpen((open) => !open)}
-          >
-            <span /><span />
-          </button>
-          <nav className={`site-nav ${menuOpen ? "is-open" : ""}`} id="site-nav" aria-label="Main navigation">
-            <a href="#how-it-works" onClick={closeMenu}>How it works</a>
-            <a href="#live-card" onClick={closeMenu}>Live card</a>
-            <a href="#questions" onClick={closeMenu}>Questions</a>
-            <a href="#contact" onClick={closeMenu}>Contact</a>
-            <a className="nav-cta" href={demoUrl} onClick={closeMenu}>Open demo <Arrow diagonal /></a>
-          </nav>
-        </div>
-      </header>
-
       <main>
-        <section className="hero container" aria-labelledby="hero-title">
-          <div className="hero-media">
-            <img src="/hero.jpg" alt="A person holding a card and smartphone" />
-            <div className="mobile-hero-copy"><p>Tap. Share. Connect.</p><h1 id="hero-title">TAGATAP</h1></div>
-          </div>
-          <div className="mobile-card-intro">
-            <div className="mobile-logo"><img src="/tagatap-mark.svg" alt="TagaTap" /></div>
-            <p className="mobile-intro">The modern Filipino business card. Share your contact details, social links, and location instantly with a single tap of your TagaTap card to any smartphone—no app required.</p>
-            <div className="profile-details">
-              <section className="profile-section" aria-labelledby="actions-title">
-                <ProfileHeading icon="bolt"><span id="actions-title">Quick Actions</span></ProfileHeading>
-                <div className="profile-action-list">
-                  <ProfileAction icon={<ProfileIcon name="person" />} onClick={saveContact} description="Add Lloyd to your phone" variant="is-primary">Save contact</ProfileAction>
-                  <ProfileAction icon={<ProfileIcon name="phone" />} href={`tel:${profile.phoneLink}`} description={profile.phone}>Call</ProfileAction>
-                  <ProfileAction icon={<ProfileIcon name="message" />} href={`sms:${profile.phoneLink}`} description="Start a text conversation">Text / SMS</ProfileAction>
-                  <ProfileAction icon={<ProfileIcon name="mail" />} href={`mailto:${profile.email}`} description={profile.email}>Email</ProfileAction>
-                  <ProfileAction icon={<ProfileIcon name="message" />} href="https://m.me/lloydpucyutan" description="Chat with Lloyd">Messenger</ProfileAction>
-                  <div className="profile-map-card">
-                    <div className="profile-map-preview">
-                      <iframe src={mapEmbedUrl} title="Map preview of Brgy. San Antonio 2, San Pablo City, Laguna" loading="lazy" tabIndex="-1" referrerPolicy="no-referrer-when-downgrade" />
-                    </div>
-                    <a className="profile-map-link" href={mapUrl} target="_blank" rel="noreferrer">
-                      <span className="profile-action-icon"><ProfileIcon name="pin" /></span>
-                      <span className="profile-action-label"><strong>Google Maps</strong><small>Brgy. San Antonio 2 · San Pablo City</small></span>
-                      <span className="profile-action-arrow"><ProfileIcon name="arrow" size={17} /></span>
-                    </a>
-                  </div>
-                </div>
-              </section>
-              <section className="profile-section" aria-labelledby="social-title">
-                <ProfileHeading icon="share"><span id="social-title">Social Media &amp; Links</span></ProfileHeading>
-                <div className="profile-social-list">
-                  <a href="https://facebook.com" target="_blank" rel="noreferrer"><SocialIcon icon={siFacebook} name="facebook" /><span>Facebook</span></a>
-                  <a href="https://instagram.com" target="_blank" rel="noreferrer"><SocialIcon icon={siInstagram} name="instagram" /><span>Instagram</span></a>
-                  <a href="https://tiktok.com" target="_blank" rel="noreferrer"><SocialIcon icon={siTiktok} name="tiktok" /><span>TikTok</span></a>
-                </div>
-              </section>
+        <section className="hero-shell" aria-labelledby="hero-title">
+          <div className="hero-frame">
+            <img className="hero-image" src="/hero-editorial.png" alt="A professional holding a digital card and phone" />
+            <div className="hero-shade" />
+            <header className="site-header">
+              <div className="nav-capsule">
+                <Brand className="header-brand" />
+                <button className="menu-toggle" type="button" aria-label={menuOpen ? "Close menu" : "Open menu"} aria-expanded={menuOpen} aria-controls="site-nav" onClick={() => setMenuOpen((open) => !open)}><span /><span /></button>
+                <nav className={`site-nav ${menuOpen ? "is-open" : ""}`} id="site-nav" aria-label="Main navigation">
+                  <a href="#about" onClick={closeMenu}>About</a>
+                  <a href="#how-it-works" onClick={closeMenu}>How it works</a>
+                  <a href="#example" onClick={closeMenu}>Example</a>
+                  <a href="#packages" onClick={closeMenu}>Packages</a>
+                  <a href="#questions" onClick={closeMenu}>FAQ</a>
+                  <a className="nav-cta" href={demoUrl} onClick={closeMenu}>Open card <Arrow diagonal /></a>
+                </nav>
+              </div>
+            </header>
+            <div className="hero-content">
+              <p className="hero-eyebrow">The digital business card for a better introduction</p>
+              <h1 id="hero-title" className="sr-only">SmarTap — tap, share, connect</h1>
+              <img className="hero-wordmark" src="/smartap-logo.svg" alt="" />
+              <div className="hero-bottom">
+                <p>Share your details, links, and next step with one simple tap. No app required.</p>
+                <a className="hero-link" href="#about">Explore SmarTap <Arrow diagonal /></a>
+              </div>
             </div>
-            <div className="hero-actions">
-              <a className="button button-lime" href={demoUrl}>Open the full card <Arrow diagonal /></a>
-              <a className="text-link" href="#how-it-works">See how it works <Arrow /></a>
+            <div className="hero-side-note"><span>01 / 03</span><span>Tap. Share. Connect.</span></div>
+          </div>
+        </section>
+
+        <section className="intro-section page-section" id="about" aria-labelledby="intro-title">
+          <div className="section-marker"><span>01 / About</span><span>SmarTap</span></div>
+          <h2 className="intro-statement" id="intro-title">“A brief hello can become a <em>lasting connection.</em>”</h2>
+          <div className="intro-grid">
+            <figure className="intro-photo"><img src="/card-editorial.png" alt="A contactless card beside a smartphone" /><figcaption>One card. More ways to connect.</figcaption></figure>
+            <div className="intro-copy">
+              <span className="micro-label">The idea</span>
+              <p>A SmarTap card opens your digital profile in someone’s phone browser. They can save your contact, reach out, find your location, or follow a link while the conversation is still fresh.</p>
+              <a className="underlined-link" href="#how-it-works">See how it works <Arrow diagonal /></a>
+            </div>
+          </div>
+          <div className="capability-strip" aria-label="SmarTap essentials"><span>No app to install</span><span>Contact details in one place</span><span>Links ready to share</span><span>A follow-up made easy</span></div>
+        </section>
+
+        <section className="how-section page-section" id="how-it-works" aria-labelledby="how-title">
+          <div className="section-marker"><span>02 / How it works</span><span>From card to connection</span></div>
+          <div className="how-heading"><h2 id="how-title">One tap. <em>Everything they need.</em></h2><p>Keep the moment simple. Your card takes care of the details.</p></div>
+          <div className="how-grid">
+            <div className="how-item"><span>01</span><h3>Tap the card</h3><p>Bring your SmarTap card to a compatible smartphone.</p></div>
+            <div className="how-item"><span>02</span><h3>Open the profile</h3><p>Your details appear in the phone’s browser.</p></div>
+            <div className="how-item"><span>03</span><h3>Stay connected</h3><p>They can save your contact or choose how to follow up.</p></div>
+          </div>
+        </section>
+
+        <section className="feature-section" aria-labelledby="feature-title">
+          <div className="feature-inner page-section">
+            <div className="feature-aside"><img src="/smartap-mark.svg" alt="" /><span>Designed for what happens after hello.</span></div>
+            <div className="feature-main"><div className="section-marker"><span>03 / Your profile</span><span>Made to connect</span></div><h2 id="feature-title">More than a <em>name and number.</em></h2>
+              <div className="feature-list">{capabilities.map((item) => <div className="feature-row" key={item.number}><span>{item.number}</span><div><h3>{item.title}</h3><p>{item.description}</p></div><Arrow diagonal /></div>)}</div>
             </div>
           </div>
         </section>
 
-        <section className="steps-section container" id="how-it-works" aria-labelledby="steps-title" ref={stepsRef}>
-          <div className="steps-heading scroll-reveal">
-            <p className="section-kicker">How it works</p>
-            <h2 id="steps-title">From introduction to connection in three easy moves.</h2>
+        <section className="example-section page-section" id="example" aria-labelledby="example-title">
+          <div className="section-marker"><span>04 / Example card</span><span>Meet Lloyd</span></div>
+          <div className="example-heading"><h2 id="example-title">See the <em>possibilities.</em></h2><p>Lloyd’s Starter profile shows how useful details can live together in one place.</p></div>
+          <div className="example-grid">
+            <div className="example-photo"><img src="/hero-editorial.png" alt="A professional holding a contactless card" /><span>A simple introduction, ready to continue.</span></div>
+            <div className="profile-preview">
+              <div className="preview-top"><span>Starter example / 001</span><img src="/smartap-mark.svg" alt="" /></div>
+              <h3>Lloyd Pucyutan</h3><p>Choose a way to connect.</p>
+              <button className="preview-save" type="button" onClick={saveContact}>Save contact <Arrow diagonal /></button>
+              <div className="preview-links">
+                <a href={`tel:${profile.phoneLink}`}>Call <Arrow diagonal /></a>
+                <a href={`sms:${profile.phoneLink}`}>Text / SMS <Arrow diagonal /></a>
+                <a href={`mailto:${profile.email}`}>Email <Arrow diagonal /></a>
+                <a href={mapUrl} target="_blank" rel="noreferrer">Location <Arrow diagonal /></a>
+              </div>
+            </div>
+            <div className="example-detail"><span className="micro-label">Everything in one place</span><strong>Contact.<br />Location.<br /><em>More.</em></strong><p>A profile gives each new connection a clear next step.</p></div>
+            <div className="example-still"><img src="/card-editorial.png" alt="A contactless card on a table" /></div>
           </div>
-          <div className="steps-list">
-            <div className="step"><span className="step-number">01</span><div><h3>Tap your card</h3><p>Bring your TagaTap card to a smartphone when you meet.</p></div></div>
-            <div className="step"><span className="step-number">02</span><div><h3>Open your profile</h3><p>Your digital card brings your details and links into one place in the browser.</p></div></div>
-            <div className="step"><span className="step-number">03</span><div><h3>Keep the conversation going</h3><p>They can save your contact, call, message, email, or follow a link.</p></div></div>
+          <div className="example-bottom"><p>The social buttons and full contact details are available in the complete sample card.</p><a className="pill-link" href={demoUrl}>Open Lloyd’s full card <Arrow diagonal /></a></div>
+        </section>
+
+        <section className="packages-section" id="packages" aria-labelledby="packages-title">
+          <div className="packages-inner page-section">
+            <div className="section-marker"><span>05 / Packages</span><span>Find your fit</span></div>
+            <div className="packages-heading"><h2 id="packages-title">A card for <em>your next step.</em></h2><p>Start with the essentials or make your introduction entirely your own.</p></div>
+            <div className="packages-grid">
+              {packages.map((offer, index) => <article className="package-card" key={offer.name}>
+                <div className="package-card-top"><span className="micro-label">0{index + 1} / SmarTap</span><span className="package-number">0{index + 1}</span></div>
+                <div className="package-card-main"><h3>{offer.name} <span>Package</span></h3><p className="package-price">{offer.price}</p><p className="package-description">{offer.description}</p></div>
+                <div className="package-card-foot"><p>{offer.detail}</p>{offer.demo && <a href={offer.demo === true ? demoUrl : offer.demo}>Explore the {offer.name} demo <Arrow diagonal /></a>}</div>
+              </article>)}
+            </div>
+            <p className="packages-note">Explore the Starter card and a fictional coffee shop Business page. Executive pages are customized for each client.</p>
           </div>
         </section>
 
-        <section className="promise-section" aria-labelledby="promise-title">
-          <div className="container promise-grid scroll-reveal">
-            <p className="section-kicker">What you can share</p>
-            <div>
-              <h2 id="promise-title">Your details. Their next step.</h2>
-              <p>One profile gives people a place to save your details, start a conversation, and find your social links when they are ready to reconnect.</p>
-            </div>
-          </div>
+        <section className="questions-section page-section" id="questions" aria-labelledby="questions-title">
+          <div className="section-marker"><span>06 / FAQ</span><span>Good to know</span></div>
+          <div className="questions-grid"><div><h2 id="questions-title">Frequently asked <em>questions.</em></h2><p>Just the essentials before you tap.</p></div><div className="questions-list">{questions.map(({ question, answer }) => <details key={question}><summary>{question}<span aria-hidden="true">+</span></summary><p>{answer}</p></details>)}</div></div>
         </section>
 
-        <section className="demo-section" id="live-card" aria-labelledby="demo-title">
-          <div className="container demo-cta">
-            <div className="demo-copy scroll-reveal">
-              <p className="section-kicker">Full card example</p>
-              <h2 id="demo-title">See the whole card.</h2>
-              <p>Open Lloyd’s standalone card to see the full profile someone receives after a tap.</p>
-            </div>
-            <a className="button button-lime" href={demoUrl}>Open Lloyd’s card <Arrow diagonal /></a>
-          </div>
-        </section>
-
-        <section className="questions-section container" id="questions" aria-labelledby="questions-title">
-          <div className="questions-heading scroll-reveal"><p className="section-kicker">Good to know</p><h2 id="questions-title">A few quick answers.</h2></div>
-          <div className="questions-list">
-            {questions.map(({ question, answer }) => (
-              <details key={question}>
-                <summary>{question}<span aria-hidden="true">+</span></summary>
-                <p>{answer}</p>
-              </details>
-            ))}
-          </div>
-        </section>
-
-        <section className="contact-section" id="contact" aria-labelledby="contact-title">
-          <div className="container contact-grid">
-            <div className="contact-copy scroll-reveal">
-              <p className="section-kicker">Contact</p>
-              <h2 id="contact-title">Let's keep in touch.</h2>
-              <p>Reach Lloyd directly or save these details for later.</p>
-            </div>
-            <div className="contact-methods">
-              <a href={`tel:${profile.phoneLink}`}>
-                <span className="contact-method-icon"><ProfileIcon name="phone" /></span>
-                <span><small>Mobile number</small><strong>{profile.phone}</strong></span>
-                <Arrow diagonal />
-              </a>
-              <a href={`mailto:${profile.email}`}>
-                <span className="contact-method-icon"><ProfileIcon name="mail" /></span>
-                <span><small>Email</small><strong>{profile.email}</strong></span>
-                <Arrow diagonal />
-              </a>
-              <a href={mapUrl} target="_blank" rel="noreferrer">
-                <span className="contact-method-icon"><ProfileIcon name="pin" /></span>
-                <span><small>Location</small><strong>{profile.address}</strong></span>
-                <Arrow diagonal />
-              </a>
-            </div>
-          </div>
-        </section>
+        <section className="closing-section" aria-labelledby="closing-title"><div className="closing-inner page-section"><div className="section-marker"><span>Keep the conversation going</span><span>SmarTap</span></div><div className="closing-main"><h2 id="closing-title">Make your next hello <em>last longer.</em></h2><a className="pill-link pill-link-light" href={demoUrl}>Explore the full card <Arrow diagonal /></a></div><div className="closing-foot"><span>Tap. Share. Connect.</span><a href="#top">Back to top ↑</a></div><img className="closing-wordmark" src="/smartap-logo.svg" alt="SmarTap" /></div></section>
       </main>
-
-      <footer className="site-footer">
-        <div className="container footer-inner"><Brand /><p>Tap. Share. Connect.</p><a href={demoUrl}>View the live card <Arrow diagonal /></a></div>
-      </footer>
       <div className={`profile-toast ${toast ? "show" : ""}`} role="status" aria-live="polite">{toast}</div>
     </div>
   );
