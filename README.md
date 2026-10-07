@@ -24,4 +24,6 @@ The deployable files are generated in `dist/`. The original compiled reference b
 
 The transparent vector logo assets are `public/smartap-logo.svg` and `public/smartap-mark.svg`. They were recreated from the supplied image.
 
+The homepage footer contains Lloyd's SmarTap contact details and quick actions. Package demo links remain in the Packages section.
+
 The social buttons currently link to generic Facebook, Instagram, and TikTok homepages. Replace them with profile URLs before using the example as a live contact card.

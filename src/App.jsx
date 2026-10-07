@@ -16,6 +16,12 @@ const capabilities = [
   { number: "03", title: "Share more of your world", description: "Add a location and links to the places you want people to find." },
 ];
 
+const howSteps = [
+  { number: "01", title: "Tap the card", description: "Bring your SmarTap card to a compatible smartphone." },
+  { number: "02", title: "Open the profile", description: "Your details appear in the phone’s browser." },
+  { number: "03", title: "Stay connected", description: "They can save your contact or choose how to follow up." },
+];
+
 const packages = [
   { name: "Starter", price: "₱1,099", description: "1 NFC card with your contact information and social media accounts.", detail: "A simple profile for sharing the essentials.", demo: true },
   { name: "Business", price: "₱2,099", description: "Everything in Starter, plus a business showcase landing page with personalized business information.", detail: "Give your business more room to introduce itself.", demo: "/demo/business.html" },
@@ -40,6 +46,7 @@ function Arrow({ diagonal = false }) {
 
 function App() {
   const [menuOpen, setMenuOpen] = useState(false);
+  const [activeStep, setActiveStep] = useState(0);
   const [toast, setToast] = useState("");
   const toastTimer = useRef(null);
 
@@ -78,9 +85,9 @@ function App() {
                 <nav className={`site-nav ${menuOpen ? "is-open" : ""}`} id="site-nav" aria-label="Main navigation">
                   <a href="#about" onClick={closeMenu}>About</a>
                   <a href="#how-it-works" onClick={closeMenu}>How it works</a>
-                  <a href="#example" onClick={closeMenu}>Example</a>
                   <a href="#packages" onClick={closeMenu}>Packages</a>
                   <a href="#questions" onClick={closeMenu}>FAQ</a>
+                  <a href="#contact" onClick={closeMenu}>Contact</a>
                   <a className="nav-cta" href={demoUrl} onClick={closeMenu}>Open card <Arrow diagonal /></a>
                 </nav>
               </div>
@@ -115,11 +122,8 @@ function App() {
         <section className="how-section page-section" id="how-it-works" aria-labelledby="how-title">
           <div className="section-marker"><span>02 / How it works</span><span>From card to connection</span></div>
           <div className="how-heading"><h2 id="how-title">One tap. <em>Everything they need.</em></h2><p>Keep the moment simple. Your card takes care of the details.</p></div>
-          <div className="how-grid">
-            <div className="how-item"><span>01</span><h3>Tap the card</h3><p>Bring your SmarTap card to a compatible smartphone.</p></div>
-            <div className="how-item"><span>02</span><h3>Open the profile</h3><p>Your details appear in the phone’s browser.</p></div>
-            <div className="how-item"><span>03</span><h3>Stay connected</h3><p>They can save your contact or choose how to follow up.</p></div>
-          </div>
+          <div className="how-grid">{howSteps.map((step) => <div className="how-item" key={step.number}><span>{step.number}</span><h3>{step.title}</h3><p>{step.description}</p></div>)}</div>
+          <div className="how-mobile"><div className="how-step-picker" role="group" aria-label="How SmarTap works steps">{howSteps.map((step, index) => <button className={activeStep === index ? "is-active" : ""} type="button" key={step.number} aria-pressed={activeStep === index} aria-controls="how-active-step" onClick={() => setActiveStep(index)}><span>{step.number}</span><small>{step.title}</small></button>)}</div><div className="how-active-step" id="how-active-step" aria-live="polite"><span>{howSteps[activeStep].number} / 03</span><h3>{howSteps[activeStep].title}</h3><p>{howSteps[activeStep].description}</p></div></div>
         </section>
 
         <section className="feature-section" aria-labelledby="feature-title">
@@ -131,31 +135,9 @@ function App() {
           </div>
         </section>
 
-        <section className="example-section page-section" id="example" aria-labelledby="example-title">
-          <div className="section-marker"><span>04 / Example card</span><span>Meet Lloyd</span></div>
-          <div className="example-heading"><h2 id="example-title">See the <em>possibilities.</em></h2><p>Lloyd’s Starter profile shows how useful details can live together in one place.</p></div>
-          <div className="example-grid">
-            <div className="example-photo"><img src="/hero-editorial.png" alt="A professional holding a contactless card" /><span>A simple introduction, ready to continue.</span></div>
-            <div className="profile-preview">
-              <div className="preview-top"><span>Starter example / 001</span><img src="/smartap-mark.svg" alt="" /></div>
-              <h3>Lloyd Pucyutan</h3><p>Choose a way to connect.</p>
-              <button className="preview-save" type="button" onClick={saveContact}>Save contact <Arrow diagonal /></button>
-              <div className="preview-links">
-                <a href={`tel:${profile.phoneLink}`}>Call <Arrow diagonal /></a>
-                <a href={`sms:${profile.phoneLink}`}>Text / SMS <Arrow diagonal /></a>
-                <a href={`mailto:${profile.email}`}>Email <Arrow diagonal /></a>
-                <a href={mapUrl} target="_blank" rel="noreferrer">Location <Arrow diagonal /></a>
-              </div>
-            </div>
-            <div className="example-detail"><span className="micro-label">Everything in one place</span><strong>Contact.<br />Location.<br /><em>More.</em></strong><p>A profile gives each new connection a clear next step.</p></div>
-            <div className="example-still"><img src="/card-editorial.png" alt="A contactless card on a table" /></div>
-          </div>
-          <div className="example-bottom"><p>The social buttons and full contact details are available in the complete sample card.</p><a className="pill-link" href={demoUrl}>Open Lloyd’s full card <Arrow diagonal /></a></div>
-        </section>
-
         <section className="packages-section" id="packages" aria-labelledby="packages-title">
           <div className="packages-inner page-section">
-            <div className="section-marker"><span>05 / Packages</span><span>Find your fit</span></div>
+            <div className="section-marker"><span>04 / Packages</span><span>Find your fit</span></div>
             <div className="packages-heading"><h2 id="packages-title">A card for <em>your next step.</em></h2><p>Start with the essentials or make your introduction entirely your own.</p></div>
             <div className="packages-grid">
               {packages.map((offer, index) => <article className="package-card" key={offer.name}>
@@ -169,12 +151,12 @@ function App() {
         </section>
 
         <section className="questions-section page-section" id="questions" aria-labelledby="questions-title">
-          <div className="section-marker"><span>06 / FAQ</span><span>Good to know</span></div>
+          <div className="section-marker"><span>05 / FAQ</span><span>Good to know</span></div>
           <div className="questions-grid"><div><h2 id="questions-title">Frequently asked <em>questions.</em></h2><p>Just the essentials before you tap.</p></div><div className="questions-list">{questions.map(({ question, answer }) => <details key={question}><summary>{question}<span aria-hidden="true">+</span></summary><p>{answer}</p></details>)}</div></div>
         </section>
 
-        <section className="closing-section" aria-labelledby="closing-title"><div className="closing-inner page-section"><div className="section-marker"><span>Keep the conversation going</span><span>SmarTap</span></div><div className="closing-main"><h2 id="closing-title">Make your next hello <em>last longer.</em></h2><a className="pill-link pill-link-light" href={demoUrl}>Explore the full card <Arrow diagonal /></a></div><div className="closing-foot"><span>Tap. Share. Connect.</span><a href="#top">Back to top ↑</a></div><img className="closing-wordmark" src="/smartap-logo.svg" alt="SmarTap" /></div></section>
       </main>
+      <footer className="closing-section" id="contact" aria-labelledby="closing-title"><div className="closing-inner page-section"><div className="section-marker"><span>06 / Contact</span><span>SmarTap</span></div><div className="closing-main"><h2 id="closing-title">Make your next hello <em>last longer.</em></h2><a className="pill-link pill-link-light" href={demoUrl}>Explore the Starter card <Arrow diagonal /></a></div><div className="footer-contact"><div><span className="micro-label">Get in touch</span><h3>Lloyd Pucyutan</h3><p>Questions about SmarTap? Reach out directly.</p></div><div className="footer-contact-links"><a href={`tel:${profile.phoneLink}`}>Call <span>{profile.phone}</span><Arrow diagonal /></a><a href={`sms:${profile.phoneLink}`}>Text / SMS <span>{profile.phone}</span><Arrow diagonal /></a><a href={`mailto:${profile.email}`}>Email <span>{profile.email}</span><Arrow diagonal /></a><a href={mapUrl} target="_blank" rel="noreferrer">Location <span>San Pablo City, Laguna</span><Arrow diagonal /></a></div><button className="footer-save" type="button" onClick={saveContact}>Save Lloyd’s contact <Arrow diagonal /></button></div><div className="closing-foot"><span>Tap. Share. Connect.</span><a href="#top">Back to top ↑</a></div><img className="closing-wordmark" src="/smartap-logo.svg" alt="SmarTap" /></div></footer>
       <div className={`profile-toast ${toast ? "show" : ""}`} role="status" aria-live="polite">{toast}</div>
     </div>
   );
