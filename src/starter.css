@@ -1,14 +1,4 @@
-<!doctype html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <meta name="theme-color" content="#f1f2ef" />
-  <link rel="icon" type="image/svg+xml" href="/smartap-mark.svg" />
-  <title>Lloyd Pucyutan | SmarTap Card</title>
-  <meta name="description" content="Explore Lloyd Pucyutan’s SmarTap digital business card." />
-  <style>
-    @font-face{font-family:Inter;src:url(/fonts/inter-400.ttf) format('truetype');font-weight:400;font-display:swap}
+@font-face{font-family:Inter;src:url(/fonts/inter-400.ttf) format('truetype');font-weight:400;font-display:swap}
     @font-face{font-family:Inter;src:url(/fonts/inter-600.ttf) format('truetype');font-weight:600;font-display:swap}
     @font-face{font-family:Inter;src:url(/fonts/inter-700.ttf) format('truetype');font-weight:700;font-display:swap}
     :root{font-family:Inter,Arial,sans-serif;color:#171a17;background:#f1f2ef;font-synthesis:none}
@@ -33,45 +23,3 @@
     footer{overflow:hidden;background:#0d0f0d;color:#fff}.footer-inner{width:min(100% - 48px,1140px);margin:auto;padding:55px 0 20px}.footer-top{display:flex;justify-content:space-between;gap:20px;font-size:12px}.footer-top a:hover{color:#a7ff60}.footer-inner>img{width:100%;margin-top:58px}
     @media(max-width:760px){.topbar{min-height:72px}.topbar img{width:110px}.layout{grid-template-columns:1fr;margin:4px auto 70px}.portrait{min-height:350px;max-height:430px}.portrait>img{object-position:65% 25%}.card{padding:23px}.card-head img{width:55px;height:50px}h1{margin-top:30px}.social a{font-size:11px}}
     @media(max-width:420px){.topbar,.layout,.footer-inner{width:calc(100% - 30px)}.portrait{min-height:300px}.portrait-caption{left:17px;right:17px;bottom:18px}.card{padding:19px}.social{grid-template-columns:1fr 1fr}}
-  </style>
-</head>
-<body>
-  <header class="topbar"><a class="back" href="/">← Back to SmarTap</a><a href="/" aria-label="SmarTap home"><img src="/smartap-logo.svg" alt="SmarTap" /></a></header>
-  <main class="layout">
-    <div class="portrait"><img src="/hero-editorial.png" alt="A professional holding a contactless card and phone" /><div class="portrait-caption"><span>Example card / Lloyd Pucyutan</span><span>Tap. Share. Connect.</span></div></div>
-    <article class="card" aria-labelledby="profile-name">
-      <div class="card-head"><span class="eyebrow">Digital business card / 001</span><img src="/smartap-mark.svg" alt="" /></div>
-      <h1 id="profile-name">Lloyd Pucyutan</h1>
-      <p class="lead">A simple way to turn an introduction into a <em>lasting connection.</em> Choose how you’d like to get in touch.</p>
-      <button class="primary" id="save-contact" type="button">Save Lloyd’s contact <span aria-hidden="true">↗</span></button>
-      <h2 class="section-title">Contact <span>Quick actions</span></h2>
-      <div class="links">
-        <a href="tel:+639163709474"><span><strong>Call</strong><small>+63 09163709474</small></span><b aria-hidden="true">↗</b></a>
-        <a href="sms:+639163709474"><span><strong>Text / SMS</strong><small>Start a conversation</small></span><b aria-hidden="true">↗</b></a>
-        <a href="mailto:lloydpucyutan01@gmail.com"><span><strong>Email</strong><small>lloydpucyutan01@gmail.com</small></span><b aria-hidden="true">↗</b></a>
-        <a href="https://m.me/lloydpucyutan" target="_blank" rel="noreferrer"><span><strong>Messenger</strong><small>Chat with Lloyd</small></span><b aria-hidden="true">↗</b></a>
-        <a href="https://www.google.com/maps/search/?api=1&amp;query=Brgy.%20San%20Antonio%202%2C%20San%20Pablo%20City%2C%20Laguna" target="_blank" rel="noreferrer"><span><strong>Location</strong><small>Brgy. San Antonio 2, San Pablo City, Laguna</small></span><b aria-hidden="true">↗</b></a>
-      </div>
-      <h2 class="section-title">Sample social links <span>Follow along</span></h2>
-      <div class="social"><a href="https://facebook.com" target="_blank" rel="noreferrer">Facebook ↗</a><a href="https://instagram.com" target="_blank" rel="noreferrer">Instagram ↗</a><a href="https://tiktok.com" target="_blank" rel="noreferrer">TikTok ↗</a></div>
-      <button class="share" id="share-card" type="button">Share this card ↗</button><p class="status" id="status" role="status" aria-live="polite"></p>
-    </article>
-  </main>
-  <footer><div class="footer-inner"><div class="footer-top"><span>Tap. Share. Connect.</span><a href="/">Back to SmarTap ↑</a></div><img src="/smartap-logo.svg" alt="SmarTap" /></div></footer>
-  <script>
-    const status = document.getElementById('status');
-    document.getElementById('save-contact').addEventListener('click', () => {
-      const vcard = ['BEGIN:VCARD','VERSION:3.0','FN:Lloyd Pucyutan','TEL;TYPE=CELL:+639163709474','EMAIL:lloydpucyutan01@gmail.com','ADR;TYPE=HOME:;;Brgy. San Antonio 2, San Pablo City, Laguna;;;;','ORG:SmarTap','END:VCARD'].join('\r\n');
-      const url = URL.createObjectURL(new Blob([vcard], {type:'text/vcard'}));
-      const link = document.createElement('a'); link.href=url; link.download='lloyd-pucyutan.vcf'; link.click();
-      setTimeout(() => URL.revokeObjectURL(url), 1000); status.textContent='Contact card downloaded.';
-    });
-    document.getElementById('share-card').addEventListener('click', async () => {
-      try {
-        if (navigator.share) await navigator.share({title:'Lloyd Pucyutan | SmarTap',url:location.href});
-        else { await navigator.clipboard.writeText(location.href); status.textContent='Card link copied.'; }
-      } catch (error) { if (error.name !== 'AbortError') status.textContent='Use your browser’s share or copy option.'; }
-    });
-  </script>
-</body>
-</html>

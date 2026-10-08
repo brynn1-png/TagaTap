@@ -133,6 +133,10 @@ em{font-family:Georgia,"Times New Roman",serif;font-weight:400}
 .footer-contact{display:grid;grid-template-columns:.8fr 1.2fr;gap:8%;padding:34px 0 65px;border-top:1px solid #444d43}
 .footer-contact h3{margin:28px 0 11px;font-size:clamp(28px,3vw,42px);font-weight:500;letter-spacing:-.045em}
 .footer-contact p{max-width:270px;margin:0;color:#a2aca0;font-size:13px;line-height:1.6}
+.footer-socials{display:flex;flex-wrap:wrap;gap:14px 24px;margin-top:31px;color:#c1c9bd}
+.footer-socials a{display:inline-flex;align-items:center;gap:9px;font-size:12px;font-weight:600}
+.footer-socials a:hover{color:var(--lime)}
+.footer-socials svg{width:17px;height:17px;fill:currentColor}
 .footer-contact-links{border-top:1px solid #444d43}
 .footer-contact-links a{display:grid;grid-template-columns:100px minmax(0,1fr) 20px;align-items:center;gap:18px;min-height:58px;border-bottom:1px solid #444d43;font-size:12px;font-weight:600}
 .footer-contact-links a span:not(.arrow){color:#c1c9bd;font-weight:400;overflow-wrap:anywhere}
@@ -175,29 +179,29 @@ em{font-family:Georgia,"Times New Roman",serif;font-weight:400}
   .hero-bottom{display:block;margin-top:23px}
   .hero-bottom p{max-width:260px;font-size:12px}
   .hero-link{margin-top:21px}
-  .intro-section{padding-top:70px;padding-bottom:65px}
+  .intro-section{padding-top:70px;padding-bottom:45px}
   .intro-statement{margin:58px auto 55px;font-size:clamp(37px,9vw,54px)}
   .intro-grid{grid-template-columns:1fr;gap:30px}
   .intro-photo{width:100%}
   .intro-photo img{height:360px}
   .intro-copy{padding:0}
   .intro-copy p{margin:19px 0 20px;font-size:15px}
-  .capability-strip{grid-template-columns:repeat(2,1fr);gap:0;margin-top:65px;text-align:left}
-  .capability-strip span{min-height:45px;padding:10px;border-bottom:1px solid var(--line)}
-  .how-section{padding-top:65px;padding-bottom:80px}
+  .capability-strip{display:none}
+  .how-section{padding-top:50px;padding-bottom:80px}
   .how-heading{display:block;margin:56px 0 42px}
   .how-heading h2{font-size:clamp(42px,10vw,60px)}
   .how-heading p{max-width:340px;margin:19px 0 0}
   .how-grid{display:none}
   .how-mobile{display:block}
   .how-step-picker{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;border-bottom:1px solid #b9c3b8}
-  .how-step-picker button{display:flex;flex-direction:column;align-items:flex-start;gap:11px;min-height:88px;padding:10px 8px 13px;border:0;border-bottom:3px solid transparent;background:none;color:var(--muted);text-align:left}
+  .how-step-picker button{display:flex;flex-direction:column;align-items:flex-start;gap:11px;min-height:88px;padding:10px 8px 13px;border:0;border-bottom:3px solid transparent;background:none;color:var(--muted);text-align:left;transition:color .18s ease,border-color .18s ease}
   .how-step-picker button.is-active{border-bottom-color:#335a2c;color:var(--ink)}
   .how-step-picker button:hover{color:var(--ink)}
   .how-step-picker button span{font-size:19px;font-weight:600;letter-spacing:-.04em}
   .how-step-picker button small{font-size:11px;line-height:1.25}
   .how-active-step{min-height:190px;margin-top:18px;padding:24px;border:1px solid #ccd5ca;border-radius:8px;background:#e3ebe0}
-  .how-active-step>span{font-size:11px;font-weight:600;letter-spacing:.08em}
+  .how-step-content{animation:how-step-enter .22s cubic-bezier(.2,.7,.2,1) both}
+  .how-step-content>span{font-size:11px;font-weight:600;letter-spacing:.08em}
   .how-active-step h3{margin:28px 0 10px;font-size:27px;font-weight:500;letter-spacing:-.04em}
   .how-active-step p{max-width:310px;margin:0;color:#4e5a4c;font-size:13px;line-height:1.6}
   .feature-inner{grid-template-columns:1fr;gap:45px;min-height:0;padding-top:68px;padding-bottom:75px}
@@ -239,3 +243,5 @@ em{font-family:Georgia,"Times New Roman",serif;font-weight:400}
   :root{scroll-behavior:auto}
   *,*::before,*::after{animation-duration:.01ms!important;transition-duration:.01ms!important}
 }
+
+@keyframes how-step-enter{from{opacity:0;transform:translateX(-10px)}to{opacity:1;transform:translateX(0)}}
